@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Continue your ShiftBridge password reset securely in the mobile app." />
+    <title>Reset Password — ShiftBridge</title>
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <header>
+      <a class="brand" href="../">ShiftBridge</a>
+      <nav>
+        <a href="../privacy/">Privacy</a>
+        <a href="../terms/">Terms</a>
+        <a href="../support/">Support</a>
+      </nav>
+    </header>
+    <main class="confirmation-page">
+      <section class="confirmation-card" aria-labelledby="reset-title">
+        <div class="success-icon" aria-hidden="true">✓</div>
+        <p class="success-label">Secure link verified</p>
+        <h1 id="reset-title">Reset Your Password</h1>
+        <p class="lead" id="reset-message">Continue in ShiftBridge to choose your new password.</p>
+        <a class="button" id="open-app" href="shiftbridge://reset-password">Open ShiftBridge</a>
+        <p class="meta reset-help">Open this page on the phone where ShiftBridge is installed. This page does not store your password or recovery link.</p>
+        <a href="../support/">Need help?</a>
+      </section>
+    </main>
+    <footer>© 2026 ShiftBridge · <a href="mailto:shiftbridgesupport@gmail.com">shiftbridgesupport@gmail.com</a></footer>
+    <script>
+      (function () {
+        var fragment = window.location.hash || '';
+        var query = window.location.search || '';
+        var params = new URLSearchParams((fragment || query).replace(/^[#?]/, ''));
+        var openButton = document.getElementById('open-app');
+        var message = document.getElementById('reset-message');
+        var error = params.get('error_description');
+        var hasRecoverySession = Boolean(
+          (params.get('access_token') && params.get('refresh_token')) || params.get('code')
+        );
+
+        if (error || !hasRecoverySession) {
+          document.querySelector('.success-icon').textContent = '!';
+          document.querySelector('.success-label').textContent = 'Link unavailable';
+          document.getElementById('reset-title').textContent = 'Request a New Reset Link';
+          message.textContent = error || 'This password-reset link is invalid or has expired.';
+          openButton.hidden = true;
+          return;
+        }
+
+        openButton.href = 'shiftbridge://reset-password' + (fragment || query);
+      })();
+    </script>
+  </body>
+</html>
